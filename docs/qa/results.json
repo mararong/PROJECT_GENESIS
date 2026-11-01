@@ -1,0 +1,101 @@
+{
+  "results": [
+    {
+      "name": "P1 desktop: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "P1 mobile: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "P2: real Pixi canvas mounted",
+      "passed": true
+    },
+    {
+      "name": "P3: canvas click matches inspector #013",
+      "passed": true
+    },
+    {
+      "name": "P3: body count matches model",
+      "passed": true
+    },
+    {
+      "name": "P3: genome matches selected model",
+      "passed": true
+    },
+    {
+      "name": "P3: tracking starts",
+      "passed": true
+    },
+    {
+      "name": "P4: paused tick stays fixed",
+      "passed": true
+    },
+    {
+      "name": "P4: single step increments exactly one",
+      "passed": true
+    },
+    {
+      "name": "P4: playback advances",
+      "passed": true
+    },
+    {
+      "name": "P4: pause remains fixed",
+      "passed": true
+    },
+    {
+      "name": "P4: 10x advances more ticks",
+      "passed": true
+    },
+    {
+      "name": "P3: close preserves selection",
+      "passed": true
+    },
+    {
+      "name": "P3: reopening retains #013",
+      "passed": true
+    },
+    {
+      "name": "P5 1440px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "P5 1440px: transport fully visible",
+      "passed": true
+    },
+    {
+      "name": "P5 1440px: sheet does not cover playback",
+      "passed": true
+    },
+    {
+      "name": "P5 768px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "P5 768px: transport fully visible",
+      "passed": true
+    },
+    {
+      "name": "P5 768px: sheet does not cover playback",
+      "passed": true
+    },
+    {
+      "name": "P5 390px: no horizontal overflow",
+      "passed": true
+    },
+    {
+      "name": "P5 390px: transport fully visible",
+      "passed": true
+    },
+    {
+      "name": "P5 390px: sheet does not cover playback",
+      "passed": true
+    },
+    {
+      "name": "P5: no browser runtime errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}

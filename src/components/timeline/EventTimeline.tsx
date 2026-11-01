@@ -1,0 +1,9 @@
+import { useState } from 'react';
+import { Circle, MousePointer2, Skull, Sprout, Utensils } from 'lucide-react';
+import type { EventKind, PrototypeEvent } from '../../types/event.ts';
+const EVENT_UI={birth:{label:'배치·탄생',Icon:Sprout},eat:{label:'섭취',Icon:Utensils},death:{label:'사망',Icon:Skull},selection:{label:'선택',Icon:MousePointer2},extinction:{label:'멸종',Icon:Circle}};
+export function EventTimeline({events,selectedEventId,onEvent}:{events:PrototypeEvent[];selectedEventId:string|null;onEvent:(event:PrototypeEvent)=>void}){
+  const [filter,setFilter]=useState<EventKind|'all'>('all'),[limit,setLimit]=useState(40);
+  const filtered=events.filter(e=>filter==='all'||e.kind===filter).slice().reverse();
+  return <div className="timeline-content"><div className="timeline-heading"><div className="section-label">사건 타임라인 <small>EVENT LOG · {events.length}</small></div><div className="event-filters" aria-label="사건 필터">{([{id:'all',label:'전체'},{id:'birth',label:'탄생'},{id:'eat',label:'섭취'},{id:'death',label:'사망'},{id:'selection',label:'선택'}]as const).map(f=><button key={f.id} aria-pressed={filter===f.id} className={filter===f.id?'active':''} onClick={()=>{setFilter(f.id);setLimit(40)}}>{f.label}</button>)}</div></div><div className="event-track" aria-label="기록된 사건">{filtered.length===0?<p className="muted">이 유형의 사건은 아직 없습니다.</p>:filtered.slice(0,limit).map(e=>{const {Icon,label}=EVENT_UI[e.kind];return <button key={e.id} className={`event-card event-${e.kind} ${selectedEventId===e.id?'selected':''}`} onClick={()=>onEvent(e)} title={`${e.message} · 발생 시점으로 되감지는 않습니다.`}><span className="event-icon"><Icon size={15}/></span><span><small className="mono">T{String(e.tick).padStart(5,'0')} <b>{label}</b></small><strong>{e.message}</strong></span></button>})}{filtered.length>limit&&<button className="load-events" onClick={()=>setLimit(n=>n+40)}>이전 사건 더 보기<br/>+{filtered.length-limit}</button>}</div></div>;
+}

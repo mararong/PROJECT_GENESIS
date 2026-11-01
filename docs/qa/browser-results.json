@@ -1,0 +1,106 @@
+{
+  "checkedAt": "2026-11-01T17:04:01.312Z",
+  "results": [
+    {
+      "label": "P1: empty library is real",
+      "passed": true
+    },
+    {
+      "label": "P2: real Pixi canvas without renderer error",
+      "passed": true
+    },
+    {
+      "label": "P3: canvas click selects the exact specimen ID",
+      "passed": true
+    },
+    {
+      "label": "P3: genome reflects data",
+      "passed": true
+    },
+    {
+      "label": "P3: tracking centers the real position",
+      "passed": true
+    },
+    {
+      "label": "P2: zoom button changes camera",
+      "passed": true
+    },
+    {
+      "label": "P2: drag pans without clearing selection",
+      "passed": true
+    },
+    {
+      "label": "P4: single step is exact",
+      "passed": true
+    },
+    {
+      "label": "P4: paused tick stays fixed",
+      "passed": true
+    },
+    {
+      "label": "P4: real ticks increase faster at 10×",
+      "passed": true
+    },
+    {
+      "label": "P4: actual feeding events recorded",
+      "passed": true
+    },
+    {
+      "label": "P4: timeline selects actual event without rewinding",
+      "passed": true
+    },
+    {
+      "label": "P5: desktop has no page overflow",
+      "passed": true
+    },
+    {
+      "label": "P5: desktop transport visible",
+      "passed": true
+    },
+    {
+      "label": "P5: tablet has no page overflow",
+      "passed": true
+    },
+    {
+      "label": "P5: tablet transport visible",
+      "passed": true
+    },
+    {
+      "label": "P5: mobile has no page overflow",
+      "passed": true
+    },
+    {
+      "label": "P5: mobile transport visible",
+      "passed": true
+    },
+    {
+      "label": "P5: mobile sheet 1 does not cover transport",
+      "passed": true
+    },
+    {
+      "label": "P5: mobile sheet 2 does not cover transport",
+      "passed": true
+    },
+    {
+      "label": "P5: mobile sheet 3 does not cover transport",
+      "passed": true
+    },
+    {
+      "label": "P5: emulated touch pans the camera",
+      "passed": true
+    },
+    {
+      "label": "P5: emulated pinch changes zoom",
+      "passed": true
+    },
+    {
+      "label": "P5: touch navigation preserves selected specimen",
+      "passed": true
+    },
+    {
+      "label": "P5: browser has no uncaught application errors",
+      "passed": true
+    }
+  ],
+  "errors": []
+}
