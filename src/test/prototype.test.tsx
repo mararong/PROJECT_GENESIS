@@ -59,7 +59,8 @@ describe('P4: UI uses actual logical time and actual events', () => {
     const engine = new MockEngine(DEFAULT_CONFIG); const onEvent = vi.fn();
     render(<EventTimeline events={engine.getSnapshot().events} selectedEventId={null} onEvent={onEvent}/>);
     fireEvent.click(screen.getByRole('button', { name: '사망' })); expect(screen.getByText('이 유형의 사건은 아직 없습니다.')).toBeInTheDocument();
-    fireEvent.click(screen.getByRole('button', { name: '탄생' })); fireEvent.click(screen.getByTitle(/초기 생명체 #050 배치/));
+    fireEvent.click(screen.getByRole('button', { name: '탄생' })); fireEvent.click(screen.getByRole('button', { name: /초기 배치 · 50개체/ }));
+    fireEvent.click(within(screen.getByRole('dialog')).getByRole('button', { name: /초기 생명체 #050 배치/ }));
     expect(onEvent.mock.calls[0][0].creatureId).toBe(50); expect(engine.getSnapshot().tick).toBe(0);
   });
 });

@@ -10,8 +10,9 @@ describe('P1: accessible shell', () => {
     expect(screen.queryByRole('button', { name: '현재 세계 저장' })).not.toBeInTheDocument();
   });
   it('marks advanced analysis as unavailable and executes help', () => {
-    const onHelp = vi.fn(); render(<SideNav viewingWorld={false} hasWorld={false} onHome={vi.fn()} onObserve={vi.fn()} onAnalyze={vi.fn()} onHistory={vi.fn()} onHelp={onHelp}/>);
+    const onHelp = vi.fn(); render(<SideNav viewingWorld={false} hasWorld={false} onHome={vi.fn()} onObserve={vi.fn()} onHistory={vi.fn()} onHelp={onHelp}/>);
     expect(screen.getByRole('button', { name: '두뇌 관찰실 준비 중' })).toBeDisabled();
+    expect(screen.queryByRole('button', { name: '개체 유전자 분석' })).not.toBeInTheDocument();
     fireEvent.click(screen.getByRole('button', { name: '도움말' })); expect(onHelp).toHaveBeenCalledOnce();
   });
   it('supports Escape and restores the opening focus after closing', () => {

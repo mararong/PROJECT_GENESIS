@@ -16,6 +16,8 @@ try {
   await b.waitFor(`document.querySelector('.pixi-host canvas') || document.querySelector('.renderer-error')`);
   check('P2: real Pixi canvas without renderer error', await b.evaluate(`!!document.querySelector('.pixi-host canvas') && !document.querySelector('.renderer-error')`));
   await b.click('튜토리얼 건너뛰기'); await b.screenshot('p2-world-desktop.png');
+  check('UI: redundant genetics menu removed', await b.evaluate(`!document.querySelector('.side-nav [aria-label="개체 유전자 분석"]')`));
+  check('UI: initial placement is one summary', await b.evaluate(`document.querySelectorAll('.event-card').length===1 && document.querySelector('.event-card').textContent.includes('초기 배치 · 50개체')`));
   const initial = generateWorld(DEFAULT_CONFIG);
   const bounds = await rect('.pixi-host');
   const camera = await b.evaluate(`({...document.querySelector('.world-renderer').dataset})`);
@@ -23,6 +25,7 @@ try {
   const c = candidates[0]; assert.ok(c, 'a visible organism must exist');
   await pointer('mousePressed', c.x, c.y, { button:'left', clickCount:1 }); await pointer('mouseReleased', c.x, c.y, { button:'left', clickCount:1 });
   check('P3: canvas click selects the exact specimen ID', await b.evaluate(`document.querySelector('.world-renderer').dataset.selectedId === '${c.id}' && document.querySelector('.specimen-name').textContent.includes('#${String(c.id).padStart(3,'0')}')`));
+  check('UI: specimen selection does not clutter important events', await b.evaluate(`!document.querySelector('.event-card.event-selection') && document.querySelectorAll('.event-card').length===1`));
   await b.click('유전자'); check('P3: genome reflects data', await b.evaluate(`document.querySelector('.genome-list').textContent.includes('${initial.creatures.find(x=>x.id===c.id).genome.moveSpeed.toFixed(3)}')`));
   await b.screenshot('p3-genome-desktop.png'); await b.click('개요'); await b.click('이 개체 추적');
   check('P3: tracking centers the real position', await b.evaluate(`Math.abs(Number(document.querySelector('.world-renderer').dataset.cameraX)-${initial.creatures.find(x=>x.id===c.id).x})<.001`));
@@ -37,12 +40,16 @@ try {
   await b.click('재생'); await delay(1000); await b.click('일시정지'); const oneX = await tick();
   await b.click('10배속'); await b.click('재생'); await delay(1000); await b.click('일시정지'); const tenX = await tick();
   check('P4: real ticks increase faster at 10×', tenX-oneX > (oneX-frozen)*4);
+  check('UI: repeated feeding is hidden from important events',await b.evaluate(`!document.querySelector('.event-card.event-eat') && document.querySelector('.event-filters button[aria-pressed=true]').textContent==='주요'`));
   await b.click('섭취');
   check('P4: actual feeding events recorded', await b.evaluate(`!!document.querySelector('.event-card.event-eat') && document.querySelector('.event-card.event-eat').textContent.includes('먹이 섭취')`));
+  check('UI: feeding records are summarized',await b.evaluate(`Number(document.querySelector('.event-card.event-eat').dataset.eventCount)>1`));
   const eventTick = await tick();
   await b.evaluate(`document.querySelector('.event-card.event-eat').click()`); await delay(100);
+  await b.waitFor(`document.querySelector('.event-detail-row')`);
+  await b.evaluate(`document.querySelector('.event-detail-row').click()`); await delay(100);
   check('P4: timeline selects actual event without rewinding', await tick()===eventTick && await b.evaluate(`!!document.querySelector('.event-card.selected') && !!document.querySelector('.specimen-name')`));
-  await b.click('전체');
+  await b.click('주요');
   await b.screenshot('p4-running-desktop.png');
   for (const [width,height,label] of [[1440,900,'desktop'],[768,1024,'tablet'],[390,844,'mobile']]) {
     await b.viewport(width,height); await delay(500);
@@ -50,6 +57,10 @@ try {
     const bar = await rect('.transport'); check(`P5: ${label} transport visible`, bar.bottom<=height+1 && bar.y>=0);
     if (width < 768) {
       for (let i=0;i<3;i++) { const panel=await rect('.inspector'); check(`P5: mobile sheet ${i+1} does not cover transport`, panel.bottom<=bar.y+1); await b.screenshot(`p5-mobile-sheet-${i+1}.png`); await b.click('시트 높이 변경'); }
+      await b.evaluate(`document.querySelector('.event-card[aria-haspopup=dialog]').click()`); await delay(150);
+      const eventDialog=await rect('[role=dialog]');
+      check('UI: grouped details fit the mobile viewport',eventDialog.x>=0 && eventDialog.x+eventDialog.width<=width+1 && eventDialog.y>=0 && eventDialog.bottom<=height+1);
+      await b.screenshot('p5-mobile-event-details.png'); await b.click('닫기');
       await b.click('정보 패널 닫기');
       await b.send('Emulation.setTouchEmulationEnabled',{enabled:true,maxTouchPoints:2});
       const cameraBefore = await b.evaluate(`Number(document.querySelector('.world-renderer').dataset.cameraX)`);
