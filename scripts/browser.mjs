@@ -22,7 +22,7 @@ export async function openBrowser() {
   const waitFor = async expression => { for (let i = 0; i < 100; i++) { if (await evaluate(expression)) return; await delay(100); } throw new Error(`Timed out: ${expression}`); };
   const click = async label => { await evaluate(`(() => {const b = [...document.querySelectorAll('button,a')].find(b => {const copy=b.cloneNode(true);copy.querySelectorAll('kbd').forEach(k=>k.remove());return b.getAttribute('aria-label') === ${JSON.stringify(label)} || copy.textContent.trim() === ${JSON.stringify(label)} || (b.getAttribute('role') === 'tab' && b.textContent.trim().startsWith(${JSON.stringify(label)}));}); if (!b || b.disabled) throw new Error('Button not available: ' + ${JSON.stringify(label)}); b.click();})()`); await delay(120); };
   const viewport = (width, height) => send('Emulation.setDeviceMetricsOverride', { width, height, deviceScaleFactor: 1, mobile: width < 768 });
-  const navigate = async (url = 'http://127.0.0.1:5173/') => { await send('Page.navigate', { url }); await waitFor(`document.querySelector('.app-shell') !== null`); };
+  const navigate = async (url = process.env.QA_BASE_URL || 'http://127.0.0.1:5173/') => { await send('Page.navigate', { url }); await waitFor(`document.querySelector('.app-shell') !== null`); };
   const screenshot = async filename => { await delay(180); const result = await send('Page.captureScreenshot', { format: 'png' }); await mkdir(resolve('docs/qa'), { recursive: true }); await writeFile(resolve('docs/qa', filename), Buffer.from(result.data, 'base64')); };
   const close = async () => { try { await send('Browser.close'); } catch {} socket.close(); child.kill(); };
   return { send, evaluate, click, viewport, navigate, screenshot, waitFor, errors, close };

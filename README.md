@@ -8,7 +8,7 @@
 
 저장소: https://github.com/mararong/PROJECT_GENESIS
 
-`.github/workflows/pages.yml`이 `main` 푸시마다 Node.js 24에서 `npm ci` → 모델·UI 테스트 → Pages용 빌드 → 배포를 실행합니다. PR에서는 테스트·빌드만 수행합니다. 테스트가 실패하면 배포하지 않습니다.
+`.github/workflows/pages.yml`이 `main` 푸시마다 Node.js 24에서 `npm ci` → 모델·UI 테스트 → Pages용 빌드 → 배포를 실행합니다. PR에서는 테스트·빌드만 수행합니다. 테스트가 실패하면 배포하지 않습니다. 배포 후 실제 Chrome에서 공개 주소의 세계 생성·캔버스·재생 제어·반응형·터치 등 25개 항목을 확인하고 결과/스크린샷을 Actions 아티팩트로 보관합니다.
 
 최초 한 번 저장소 **Settings → Pages → Build and deployment → Source → GitHub Actions**를 선택해야 합니다. 이후에는 `main`에 푸시하면 자동으로 배포됩니다. 최초 설정 전 실패한 배포는 Actions의 `Test and deploy GitHub Pages`에서 `Re-run failed jobs`로 다시 실행할 수 있습니다.
 
