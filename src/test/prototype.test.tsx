@@ -76,3 +76,28 @@ describe('P5: exceptional states and real persistence', () => {
     const result = saveWorldConfig(DEFAULT_CONFIG); expect(result.items).toEqual([]); expect(result.error).toContain('저장하지 못했습니다');
   });
 });
+
+describe('tutorial only appears for a newly created world', () => {
+  it('still provides onboarding when creating a fresh world', () => {
+    render(<App/>); createWorld();
+    expect(screen.getByRole('button', { name: '튜토리얼 건너뛰기' })).toBeInTheDocument();
+  });
+  it('does not replay onboarding when opening a saved world configuration after reload', () => {
+    saveWorldConfig(DEFAULT_CONFIG);
+    render(<App/>);
+    fireEvent.click(screen.getByRole('button', { name: /설정으로 다시 생성/ }));
+    expect(screen.getByTestId('header-tick')).toHaveTextContent('000000');
+    expect(screen.getByRole('button', { name: '재생' })).toBeInTheDocument();
+    expect(screen.queryByRole('button', { name: '튜토리얼 건너뛰기' })).not.toBeInTheDocument();
+  });
+  it('does not replay an undismissed tutorial through either return route', () => {
+    render(<App/>); createWorld();
+    expect(screen.getByRole('button', { name: '튜토리얼 건너뛰기' })).toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '세계 목록' }));
+    fireEvent.click(screen.getByRole('button', { name: '현재 관측 계속하기' }));
+    expect(screen.queryByRole('button', { name: '튜토리얼 건너뛰기' })).not.toBeInTheDocument();
+    fireEvent.click(screen.getByRole('button', { name: '세계 목록' }));
+    fireEvent.click(screen.getByRole('button', { name: '세계 관측소' }));
+    expect(screen.queryByRole('button', { name: '튜토리얼 건너뛰기' })).not.toBeInTheDocument();
+  });
+});

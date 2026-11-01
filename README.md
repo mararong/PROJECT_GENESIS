@@ -92,7 +92,7 @@ src/styles/             디자인 토큰, 공통 스타일, 관측소 반응형 
 
 ## 검증
 
-- `npm.cmd test`: 모델 테스트 13개 + Vitest/React Testing Library 테스트 22개.
+- `npm.cmd test`: 모델 테스트 13개 + Vitest/React Testing Library 테스트 25개.
 - `npm.cmd run typecheck`, `npm.cmd run build`.
 - 개발 서버 실행 후 `npm.cmd run test:browser`: 실제 Chrome에서 생성·캔버스 클릭·추적·팬·줌·틱/배속·타임라인 및 1440×900 / 768×1024 / 390×844 반응형, 에뮬레이션 터치를 포함한 31개 항목 검증. 결과와 스크린샷은 `docs/qa/`에 기록합니다.
 - Chrome 위치가 다르면 `CHROME_PATH` 환경변수에 실행 파일 경로를 지정하세요. 이 QA 스크립트는 독립된 테스트용 프로필을 `tmp/`에 생성합니다.
