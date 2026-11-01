@@ -8,13 +8,22 @@ export async function openBrowser() {
   const port = 9400 + Math.floor(Math.random() * 1000);
   const profile = resolve('tmp', `qa-chrome-${port}`);
   await mkdir(profile, { recursive: true });
-  const child = spawn(chrome, ['--headless=new', '--use-gl=angle', '--use-angle=swiftshader', '--in-process-gpu', '--no-sandbox', '--disable-extensions', '--enable-unsafe-swiftshader', '--no-first-run', '--no-default-browser-check', `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`, 'about:blank'], { windowsHide: true, stdio: 'ignore' });
+  const platformFlags = process.platform === 'win32' ? ['--in-process-gpu'] : ['--disable-dev-shm-usage'];
+  let chromeError = '', launchError;
+  const child = spawn(chrome, ['--headless=new', '--use-gl=angle', '--use-angle=swiftshader', ...platformFlags, '--no-sandbox', '--disable-extensions', '--enable-unsafe-swiftshader', '--no-first-run', '--no-default-browser-check', `--remote-debugging-port=${port}`, `--user-data-dir=${profile}`, 'about:blank'], { windowsHide: true, stdio: ['ignore', 'ignore', 'pipe'] });
+  child.stderr.on('data', data => { chromeError = (chromeError + data).slice(-3000); });
+  child.once('error', error => { launchError = error; });
   let target;
   for (let i = 0; i < 80; i++) { try { const list = await (await fetch(`http://127.0.0.1:${port}/json`)).json(); target = list.find(t => t.type === 'page'); if (target) break; } catch {} await delay(100); }
-  if (!target) { child.kill(); throw new Error('Headless Chrome did not expose a local QA target'); }
-  const socket = new WebSocket(target.webSocketDebuggerUrl), pending = new Map(), errors = []; let sequence = 0;
+  if (!target) { child.kill(); throw new Error(`Headless Chrome did not expose a local QA target: ${launchError?.message || chromeError}`); }
+  const debuggerUrl = new URL(target.webSocketDebuggerUrl);
+  debuggerUrl.hostname = '127.0.0.1';
+  debuggerUrl.port = String(port);
+  const socket = new WebSocket(debuggerUrl), pending = new Map(), errors = []; let sequence = 0;
   socket.addEventListener('message', event => { const data = JSON.parse(event.data); if (data.id) { const p = pending.get(data.id); pending.delete(data.id); if (data.error) p?.reject(new Error(JSON.stringify(data.error))); else p?.resolve(data.result); } else if (data.method === 'Runtime.exceptionThrown') errors.push(data.params.exceptionDetails.exception?.description ?? data.params.exceptionDetails.text); else if (data.method === 'Log.entryAdded' && data.params.entry.level === 'error') errors.push(data.params.entry.text); });
-  await new Promise((res, rej) => { socket.addEventListener('open', res, { once: true }); socket.addEventListener('error', rej, { once: true }); });
+  try {
+    await new Promise((res, rej) => { socket.addEventListener('open', res, { once: true }); socket.addEventListener('error', e => rej(new Error(`Chrome QA connection failed: ${e.message || e.error?.message || 'WebSocket error'}; ${chromeError}`)), { once: true }); });
+  } catch (error) { socket.close(); child.kill(); throw error; }
   socket.addEventListener('close', e => { for (const p of pending.values()) p.reject(new Error(`Chrome QA connection closed: ${e.code} ${e.reason}`)); pending.clear(); });
   const send = (method, params = {}) => new Promise((resolve, reject) => { const id = ++sequence; const timeout = setTimeout(() => { pending.delete(id); reject(new Error(`CDP timeout: ${method}`)); }, 15000); pending.set(id, { resolve: value => { clearTimeout(timeout); resolve(value); }, reject: issue => { clearTimeout(timeout); reject(issue); } }); socket.send(JSON.stringify({ id, method, params })); });
   await send('Runtime.enable'); await send('Page.enable'); await send('Log.enable');
