@@ -11,7 +11,7 @@ export interface TimelineGroup {
   order: number;
 }
 
-const IMPORTANT_KINDS = new Set<EventKind>(['birth', 'death', 'extinction']);
+const IMPORTANT_KINDS = new Set<EventKind>(['birth', 'death', 'extinction', 'reproduction', 'resource_low', 'resource_recovered']);
 const GROUP_TICKS = 100;
 
 /** Presentation-only summaries. Every member is the original model event. */
@@ -40,6 +40,9 @@ export function summarizeTimeline(events: readonly PrototypeEvent[], filter: Tim
     else if (group.kind === 'selection') group.label = '개체 선택 ' + count + '회';
     else if (group.kind === 'death') group.label = organisms + '개체 사망';
     else if (group.kind === 'birth') group.label = (group.events.some(e => e.message.includes('데모 번식')) ? '데모 번식 · ' : '') + organisms + '개체 탄생';
+    else if (group.kind === 'reproduction') group.label = count + '회 번식 · ' + organisms + '개체';
+    else if (group.kind === 'resource_low') group.label = '먹이 자원 부족 · ' + count + '회';
+    else if (group.kind === 'resource_recovered') group.label = '먹이 자원 회복 · ' + count + '회';
     return group;
   }).sort((a, b) => b.lastTick - a.lastTick || b.order - a.order);
 }

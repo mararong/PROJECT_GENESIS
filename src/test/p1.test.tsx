@@ -6,7 +6,7 @@ import { SideNav } from '../components/layout/SideNav';
 describe('P1: accessible shell', () => {
   it('clearly identifies the prototype and hides world operations until a world exists', () => {
     render(<TopBar world={null} onHome={vi.fn()} onCreate={vi.fn()} onSave={vi.fn()} onPanel={vi.fn()} fullscreen={false} onFullscreen={vi.fn()}/>);
-    expect(screen.getByText('프로토타입 시뮬레이션')).toBeInTheDocument();
+    expect(screen.getByText('M0 생태계 시뮬레이션')).toBeInTheDocument();
     expect(screen.queryByRole('button', { name: '현재 세계 저장' })).not.toBeInTheDocument();
   });
   it('marks advanced analysis as unavailable and executes help', () => {

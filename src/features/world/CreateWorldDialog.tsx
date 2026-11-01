@@ -31,9 +31,9 @@ function CreateWorldForm({ onCreate }: { onCreate: (config: WorldConfig) => void
       {step === 2 && <>
         <label>시작 개체수<input autoFocus type="number" min="10" max="100" step="1" value={Number.isNaN(config.population) ? '' : config.population} onChange={e => update({ population: e.target.value === '' ? NaN : Number(e.target.value) })}/><small>10~100마리. 기본값은 50마리입니다.</small></label>
         <div className="notice"><Sprout size={19}/><span>몸통 + 이동기관 1~4개 + 감각기관 1~3개 + 섭식기관. 씨드에 따라 기관의 크기와 부착 위치가 달라집니다.</span></div>
-        <p className="form-note">세 가지 종 표식은 관찰용 분류입니다. 자연선택, 돌연변이와 번식은 이번 데모에서 실행하지 않습니다.</p>
+        <p className="form-note">세 가지 종 표식은 관찰용 분류입니다. 성장·번식·노화·사망을 계산합니다. 신체 변이와 진화는 M1에서 추가합니다.</p>
       </>}
-      {step === 3 && <><dl className="data-list"><div><dt>세계 이름</dt><dd>{config.name}</dd></div><div><dt>씨드</dt><dd>{config.seed}</dd></div><div><dt>지형</dt><dd>{PRESET_NAMES[config.preset]}</dd></div><div><dt>초기 개체</dt><dd>{config.population}마리 / 3종</dd></div><div><dt>초기 상태</dt><dd>일시정지</dd></div></dl><div className="notice">이동 · 먹이 탐색 · 섭취 · 에너지 소비를 사용하는 프로토타입입니다. 생성 조건만 브라우저에 저장하며, 진행 상태는 저장하지 않습니다.</div></>}
+      {step === 3 && <><dl className="data-list"><div><dt>세계 이름</dt><dd>{config.name}</dd></div><div><dt>씨드</dt><dd>{config.seed}</dd></div><div><dt>지형</dt><dd>{PRESET_NAMES[config.preset]}</dd></div><div><dt>초기 개체</dt><dd>{config.population}마리 / 3종</dd></div><div><dt>초기 상태</dt><dd>일시정지</dd></div></dl><div className="notice">이동 · 섭취 · 성장 · 번식 · 사망을 계산하는 M0 생태계입니다. 생성 조건만 브라우저에 저장하며, 진행 상태는 저장하지 않습니다.</div></>}
       {error && <p role="alert" className="error-message">{error}</p>}
     </div><div className="wizard-preview"><span className="eyebrow">{step === 2 ? 'BODY PREVIEW' : 'TERRAIN PREVIEW'}</span>{step === 2 ? <CreaturePreview creature={preview.creatures[0]}/> : <MiniMap world={preview}/>}<small>미리보기 · 시뮬레이션 결과가 아닙니다</small></div></div>
     <div className="dialog-footer"><button onClick={() => setStep(s => s - 1)} disabled={step === 1}><ArrowLeft size={16}/>이전</button>{step < 3 ? <button className="primary" onClick={next}>다음<ChevronRight size={16}/></button> : <button className="primary" onClick={() => { const issue = validateConfig(config); setError(issue); if (!issue) onCreate(config); }}>세계 생성<Sprout size={16}/></button>}</div>

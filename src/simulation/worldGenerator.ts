@@ -1,6 +1,7 @@
 import type { BodyPartGene, Creature } from '../types/creature.ts';
 import type { WorldConfig, WorldState } from '../types/world.ts';
 import { seededRandom, smoothNoise, coordinateNoise } from './seededRandom.ts';
+import { calculateStatistics } from './SimulationStatistics.ts';
 export const MAP_SIZE = 128;
 export const DEFAULT_CONFIG: WorldConfig = { name: '첫 번째 생태계', seed: 2026, preset: 'balanced', population: 50, demoReproduction: false };
 export function validateConfig(config: WorldConfig): string | null {
@@ -36,9 +37,11 @@ export function generateWorld(config: WorldConfig): WorldState {
   const creatures: Creature[] = Array.from({length:config.population}, (_, i) => {
     const position = spawn[Math.floor(random() * spawn.length)], bodyParts = generateBody(random);
     return { id:i + 1,speciesId:i % 3 + 1,...position,heading:random() * Math.PI * 2,energy:65 + random() * 25,maxEnergy:100,health:100,age:0,bodyParts,parentId:null,
+      alive:true,birthTick:0,lastReproductionTick:0,growth:.55,offspringCount:0,deathCause:null,deathTick:null,
       genome:{bodySize:bodyParts[0].size,moveSpeed:.1 + random() * .12,senseRadius:5 + random() * 7,metabolism:.07 + random() * .06},currentAction:'idle' };
   });
   const resources = Array.from({length:config.preset === 'arid' ? 180 : config.preset === 'forest' ? 650 : 440}, (_,id) => ({id,...land[Math.floor(random() * land.length)],amount:12 + random() * 18,capacity:30}));
   return {config:{...config,name:config.name.trim()},seed:config.seed,tick:0,terrain:{width:MAP_SIZE,height:MAP_SIZE,tiles},creatures,deceased:{},resources,
+    statistics:calculateStatistics(creatures,resources,0,{totalBirths:creatures.length,totalDeaths:0,totalReproductions:0}),
     events:creatures.map(c=>({id:`0-birth-${c.id}`,tick:0,kind:'birth',creatureId:c.id,message:`초기 생명체 #${String(c.id).padStart(3,'0')} 배치`,x:c.x,y:c.y})),populationHistory:[{tick:0,population:creatures.length}]};
 }

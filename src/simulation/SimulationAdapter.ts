@@ -1,5 +1,5 @@
 import type { WorldState } from '../types/world.ts';
-/** Swap this boundary for M0's engine; React and Pixi only consume snapshots. */
+/** UI boundary: React and Pixi consume snapshots; policies and physics live in the engine. */
 export interface SimulationAdapter {
   getSnapshot():WorldState;
   step():WorldState;

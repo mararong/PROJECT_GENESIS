@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useRef, useState } from 'react';
-import { MockEngine } from '../simulation/mockEngine.ts';
+import { SimulationEngine } from '../simulation/SimulationEngine.ts';
 import { SimulationClock } from '../simulation/SimulationClock.ts';
 import type { WorldConfig, WorldState } from '../types/world.ts';
 import type { SimulationAdapter } from '../simulation/SimulationAdapter.ts';
@@ -7,7 +7,7 @@ export function useSimulation(){
   const adapter=useRef<SimulationAdapter|null>(null),clock=useRef(new SimulationClock());
   const [snapshot,setSnapshot]=useState<WorldState|null>(null),[isPlaying,setPlaying]=useState(false),[speed,setSpeed]=useState(1),[tickRate,setTickRate]=useState(0);
   const control=useRef({isPlaying,speed});control.current={isPlaying,speed};
-  const create=useCallback((config:WorldConfig)=>{const next=new MockEngine(config);adapter.current?.dispose();adapter.current=next;clock.current.clear();setSnapshot(adapter.current.getSnapshot());setPlaying(false);setSpeed(1);setTickRate(0);},[]);
+  const create=useCallback((config:WorldConfig)=>{const next=new SimulationEngine(config);adapter.current?.dispose();adapter.current=next;clock.current.clear();control.current={isPlaying:false,speed:1};setSnapshot(adapter.current.getSnapshot());setPlaying(false);setSpeed(1);setTickRate(0);},[]);
   const step=useCallback(()=>{if(!control.current.isPlaying&&adapter.current)setSnapshot(adapter.current.step());},[]);
   const select=useCallback((id:number)=>{if(adapter.current)setSnapshot(adapter.current.selectCreature(id));},[]);
   useEffect(()=>{

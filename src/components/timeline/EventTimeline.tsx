@@ -11,10 +11,14 @@ const EVENT_UI = {
   death: { label: '사망', Icon: Skull },
   selection: { label: '선택', Icon: MousePointer2 },
   extinction: { label: '멸종', Icon: Circle },
+  reproduction: { label: '번식', Icon: Sprout },
+  resource_low: { label: '자원 부족', Icon: Utensils },
+  resource_recovered: { label: '자원 회복', Icon: Sprout },
 };
 const FILTERS = [
   { id: 'important', label: '주요' }, { id: 'all', label: '전체' },
   { id: 'birth', label: '탄생' }, { id: 'death', label: '사망' }, { id: 'eat', label: '섭취' },
+  { id: 'reproduction', label: '번식' },
 ] as const;
 
 export function EventTimeline({ events, selectedEventId, onEvent }: {
