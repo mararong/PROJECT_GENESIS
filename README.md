@@ -2,6 +2,18 @@
 
 인공 생태계를 관찰하는 웹 UI 프로토타입. 기준 문서는 `PROJECT_GENESIS_design_v1.md`의 12장과 18장이며, 실제 신경망·진화·문명 엔진은 포함하지 않습니다. 화면의 **프로토타입 시뮬레이션** 표기를 유지합니다.
 
+## 웹에서 실행 / GitHub Pages
+
+배포 주소: **https://mararong.github.io/PROJECT_GENESIS/**
+
+저장소: https://github.com/mararong/PROJECT_GENESIS
+
+`.github/workflows/pages.yml`이 `main` 푸시마다 Node.js 24에서 `npm ci` → 모델·UI 테스트 → Pages용 빌드 → 배포를 실행합니다. PR에서는 테스트·빌드만 수행합니다. 테스트가 실패하면 배포하지 않습니다.
+
+최초 한 번 저장소 **Settings → Pages → Build and deployment → Source → GitHub Actions**를 선택해야 합니다. 이후에는 `main`에 푸시하면 자동으로 배포됩니다. 최초 설정 전 실패한 배포는 Actions의 `Test and deploy GitHub Pages`에서 `Re-run failed jobs`로 다시 실행할 수 있습니다.
+
+Pages 빌드는 `npm run build:pages`이며 `/PROJECT_GENESIS/` 경로로 자산을 생성합니다. 로컬 개발 및 일반 `npm run build`는 기존 루트 경로를 유지합니다. 저장소 이름을 바꾸면 `package.json`의 `build:pages` 경로도 수정하세요. 배포 진행/결과는 저장소의 Actions 탭에서 확인할 수 있습니다.
+
 ## 실행
 
 Node.js 24 이상, npm, WebGL을 지원하는 최신 브라우저가 필요합니다.
@@ -88,4 +100,4 @@ DOM 테스트에서는 GPU 캔버스를 대체하며, 실제 Pixi 검증은 브�
 
 ## 미구현 기능
 
-실제 신경망·학습·NEAT, 유전적 진화·자연선택·종 분화, 기억·사회관계·문명/기술 형성, 유전자 편집 실험, 계통수 분석, 과거 상태 되감기·스냅샷 복원·평행세계 비교, 대규모 영구 저장, 서버/계정/멀티플레이 및 서버 배포. 고급 메뉴는 준비 중으로 비활성화하고 동작하지 않는 저장·개입 버튼을 표시하지 않습니다.
+실제 신경망·학습·NEAT, 유전적 진화·자연선택·종 분화, 기억·사회관계·문명/기술 형성, 유전자 편집 실험, 계통수 분석, 과거 상태 되감기·스냅샷 복원·평행세계 비교, 대규모 영구 저장, 서버/계정/멀티플레이 및 백엔드 서버 배포. 고급 메뉴는 준비 중으로 비활성화하고 동작하지 않는 저장·개입 버튼을 표시하지 않습니다.
